@@ -16,9 +16,20 @@ def test_valid_login(page):
     secure = SecurePage(page)
     expect(secure.heading).to_be_visible()
 
+def test_invalid_password(page):
+    login = LoginPage(page)
+    login.navigate()
+    login.login(os.getenv("VALID_USERNAME"), "invalid_pass")
+    expect(login.error_message).to_contain_text("Your password is invalid!")
 
-def test_invalid_login(page):
+def test_invalid_username(page):
+    login = LoginPage(page)
+    login.navigate()
+    login.login("invalid_user", os.getenv("VALID_PASSWORD"))
+    expect(login.error_message).to_contain_text("Your username is invalid!")
+
+def test_invalid_login_and_password(page):
     login = LoginPage(page)
     login.navigate()
     login.login("invalid_user", "invalid_pass")
-    expect(login.error_message).to_be_visible()
+    expect(login.error_message).to_contain_text("Your username is invalid!")
